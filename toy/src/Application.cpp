@@ -1,8 +1,8 @@
 #include "Application.h"
 #include "Input.h"
 #include "Game.h"
-#include <SDL2/SDL.h>
-#include <cassert>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
 namespace toy
 {
@@ -53,11 +53,11 @@ void Application::run(Game* game)
                     break;
 
                 case SDL_MOUSEMOTION:
-                    Input::moveMouse(event.motion.x, event.motion.y);
+                    Input::moveMouse((f32)event.motion.x, (f32)event.motion.y);
                     break;
 
                 case SDL_MOUSEWHEEL:
-                    Input::scrollMouseWheel(event.wheel.y);
+                    Input::scrollMouseWheel((f32)event.wheel.y);
                     break;
 
                 case SDL_QUIT:
@@ -66,7 +66,7 @@ void Application::run(Game* game)
             }
         }
 
-        game->run();
+        game->update();
     }
 }
 
@@ -75,15 +75,33 @@ void Application::quit()
     running = false;
 }
 
-void Application::set(Application* application)
-{
-    instance = application;
-}
-
 Application& Application::get()
 {
     assert(instance != nullptr);
     return *instance;
+}
+
+void Application::execute(ApplicationProps props, Game* game)
+{
+    Application* app = nullptr;
+
+    // setup logging
+    {
+        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("toy.log", true);
+        spdlog::set_default_logger(std::make_shared<spdlog::logger>("log", spdlog::sinks_init_list({ console_sink, file_sink })));
+    }
+
+    try {
+        app = new Application(props);
+        instance = app;
+        app->run(game);
+    }
+    catch (const std::exception& e) {
+        LOG_ERROR("Exception: {}", e.what());
+    }
+
+    delete app;
 }
 
 }
