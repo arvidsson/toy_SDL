@@ -6,6 +6,8 @@
 namespace toy
 {
 
+class Game;
+
 struct ApplicationProps
 {
     String title;
@@ -18,7 +20,7 @@ class Application final
 public:
     Application(ApplicationProps props);
     ~Application();
-    void run();
+    void run(Game* game);
     void quit();
 
     static void set(Application*);

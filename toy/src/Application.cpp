@@ -1,4 +1,6 @@
 #include "Application.h"
+#include "Input.h"
+#include "Game.h"
 #include <SDL2/SDL.h>
 #include <cassert>
 
@@ -25,20 +27,46 @@ Application::~Application()
     SDL_Quit();
 }
 
-void Application::run()
+void Application::run(Game* game)
 {
-    SDL_Event e;
+    SDL_Event event;
+
     while (running) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                quit();
-            }
-            else if (e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_ESCAPE) {
+        Input::clear();
+
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_KEYDOWN:
+                    Input::pressKey(event.key.keysym.sym);
+                    break;
+
+                case SDL_KEYUP:
+                    Input::releaseKey(event.key.keysym.sym);
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    Input::pressMouseButton(event.button.button);
+                    break;
+
+                case SDL_MOUSEBUTTONUP:
+                    Input::releaseMouseButton(event.button.button);
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    Input::moveMouse(event.motion.x, event.motion.y);
+                    break;
+
+                case SDL_MOUSEWHEEL:
+                    Input::scrollMouseWheel(event.wheel.y);
+                    break;
+
+                case SDL_QUIT:
                     quit();
-                }
+                    break;
             }
         }
+
+        game->run();
     }
 }
 
