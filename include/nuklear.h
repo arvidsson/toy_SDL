@@ -223,6 +223,8 @@
 #ifndef NK_NUKLEAR_H_
 #define NK_NUKLEAR_H_
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #ifdef __cplusplus
 extern "C" {
 #endif
