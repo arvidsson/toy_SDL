@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "SDL.h"
+#include <nuklear.h>
 
 namespace toy
 {
@@ -33,6 +34,7 @@ private:
     bool running = true;
     SDL_Window* window;
     SDL_GLContext context;
+    nk_context* ctx;
 
     static Application* instance;
 };

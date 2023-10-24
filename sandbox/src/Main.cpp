@@ -3,11 +3,9 @@ using namespace toy;
 
 /*
     TODO
-    - opengl shaders, render a triangle
     - render a sprite
     - random numbers
     - tweens
-    - math types
     - singleton
     - coroutines somehow
     - nuklear gui
