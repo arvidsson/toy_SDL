@@ -166,13 +166,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\gfx\Shader.cpp" />
+    <ClCompile Include="src\gfx\VertexArray.cpp" />
     <ClCompile Include="src\Input.cpp" />
+    <ClCompile Include="src\vendor\gl.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Core.h" />
+    <ClInclude Include="src\File.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\gfx\Buffer.h" />
+    <ClInclude Include="src\gfx\BufferLayout.h" />
+    <ClInclude Include="src\gfx\Shader.h" />
+    <ClInclude Include="src\gfx\ShaderData.h" />
+    <ClInclude Include="src\gfx\VertexArray.h" />
     <ClInclude Include="src\Input.h" />
+    <ClInclude Include="src\SDL.h" />
     <ClInclude Include="src\Toy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

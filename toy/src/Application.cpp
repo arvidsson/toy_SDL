@@ -9,20 +9,33 @@ namespace toy
 
 Application* Application::instance = nullptr;
 
-Application::Application(ApplicationProps props)
+Application::Application(ApplicationProps props) : props(props)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        throw RuntimeError("Failed to init SDL2");
     }
 
-    window = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, props.width, props.height, SDL_WINDOW_SHOWN);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    window = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, props.width, props.height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (!window) {
         SDL_Log("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        throw RuntimeError("Failed to create window");
     }
+
+     context = SDL_GL_CreateContext(window);
+
+     int version = gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
+     printf("GL %d.%d\n", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 }
 
 Application::~Application()
 {
+    SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
@@ -30,6 +43,8 @@ Application::~Application()
 void Application::run(Game* game)
 {
     SDL_Event event;
+
+    game->init();
 
     while (running) {
         Input::clear();
@@ -67,6 +82,14 @@ void Application::run(Game* game)
         }
 
         game->update();
+
+        glClearColor(props.clearColor.r, props.clearColor.g, props.clearColor.b, props.clearColor.a);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        game->render();
+
+        SDL_GL_SwapWindow(window);
+        SDL_Delay(1);
     }
 }
 

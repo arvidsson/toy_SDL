@@ -1,25 +1,62 @@
 #include "Toy.h"
+using namespace toy;
 
-using Input = toy::Input;
+/*
+    TODO
+    - opengl shaders, render a triangle
+    - render a sprite
+    - random numbers
+    - tweens
+    - math types
+    - singleton
+    - coroutines somehow
+    - nuklear gui
+    - yaml
+*/
+
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
+};
 
 class Sandbox : public toy::Game
 {
+public:
+    void init() override
+    {
+        shader.compile(toy::File::load("data/shader.vs").unwrap(), toy::File::load("data/shader.fs").unwrap());
+
+        vb = toy::Buffer::create_vertex_buffer(vertices, sizeof(vertices));
+
+        va = toy::VertexArray::create(vb, toy::BufferLayout{
+                {toy::ShaderData::Type::Float3, "a_Position"},
+            }
+        );
+    }
+
     void update() override
     {
         if (Input::isKeyDown(SDLK_ESCAPE)) {
-            throw toy::RuntimeError("An error happened");
-            toy::Application::get().quit();
+            Application::get().quit();
         }
     }
 
     void render() override
     {
-
+        shader.bind();
+        va.bind();
+        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
+
+private:
+    toy::Shader shader;
+    toy::Buffer vb;
+    toy::VertexArray va;
 };
 
 int main(int argc, char *argv[])
 {
-    toy::Application::execute({ .title = "sandbox", .width = 1280, .height = 720 }, new Sandbox());
+    Application::execute({ .title = "sandbox", .width = 1280, .height = 720, .clearColor = {0.0f, 0.0f, 0.0f, 1.0f } }, new Sandbox());
     return 0;
 }

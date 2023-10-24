@@ -43,8 +43,26 @@ constexpr ref<T> make_ref(Args&& ... args)
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
+#include <glm/glm.hpp>
+
+using v2 = glm::vec<2, f32>;
+using v3 = glm::vec<3, f32>;
+using v4 = glm::vec<4, f32>;
+
+using v2u = glm::vec<2, u32>;
+using v3u = glm::vec<3, u32>;
+using v4u = glm::vec<4, u32>;
+
+using v2i = glm::vec<2, i32>;
+using v3i = glm::vec<3, i32>;
+using v4i = glm::vec<4, i32>;
+
+using mat4 = glm::mat<4, 4, f32>;
+
 namespace toy
 {
+
+using Color = glm::vec<4, f32>;
 
 using String = std::string;
 

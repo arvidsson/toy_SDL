@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core.h"
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 namespace toy
 {
@@ -13,6 +13,7 @@ struct ApplicationProps
     String title;
     u32 width;
     u32 height;
+    Color clearColor;
 };
 
 class Application final
@@ -28,8 +29,10 @@ private:
     ~Application();
     void run(Game* game);
 
+    ApplicationProps props;
     bool running = true;
     SDL_Window* window;
+    SDL_GLContext context;
 
     static Application* instance;
 };
